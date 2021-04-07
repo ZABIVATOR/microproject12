@@ -2,8 +2,6 @@ import warnings
 import sys
 warnings.filterwarnings("ignore")
 import gmsh
-import warnings
-warnings.filterwarnings("ignore")
 from datetime import date
 from PyQt5 import *
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -11,6 +9,14 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QMessageBox, QHB
 from PyQt5.QtGui import QIcon, QPixmap
 figura = 0 
 poradok= 0
+
+try:
+	#Mac/Linux
+	from PyQt5.QtWinExtras import QtWin
+	myappid = 'mycompany.myproduct.subproduct.version'
+	QtWin.setCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+	pass
 
 class bd(QWidget):#oshibka
 
@@ -20,7 +26,7 @@ class bd(QWidget):#oshibka
 		self.initUI()
 
 		
-		#primer
+		#if(self.v==0):
 			#self.g=bd()
 			#self.g.show()
 		
@@ -39,7 +45,8 @@ class gmh():#mesh
 	def __init__(self):
 		self.dt = date.today()
 
-	def in1(self,a):
+	def in1(self,a):#krug
+			
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -55,11 +62,12 @@ class gmh():#mesh
 		gmsh.model.geo.synchronize()
 		gmsh.model.mesh.generate(2)
 		gmsh.write("krug" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("krug" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in2(self,a,b):
+	def in2(self,a,b):#treugolnic
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -76,11 +84,12 @@ class gmh():#mesh
 		gmsh.model.geo.synchronize()
 		gmsh.model.mesh.generate(2)
 		gmsh.write("treougolnic" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("treougolnic" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in3(self,a,b):
+	def in3(self,a,b):#pramougolnik
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -99,11 +108,12 @@ class gmh():#mesh
 		gmsh.model.geo.synchronize()
 		gmsh.model.mesh.generate(2)
 		gmsh.write("pramougolnic" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("pramougolnic" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in23(self,h,r):
+	def in23(self,h,r):#cylinder
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -111,13 +121,14 @@ class gmh():#mesh
 		cylinder = gmsh.model.occ.addCylinder(0, 0, 0 ,h, 0, 0, r)
 		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate()
+		gmsh.model.mesh.generate(2)
 		gmsh.write("cylinder" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("cylinder" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in24(self,h,R,r):
+	def in24(self,h,R,r):#cone
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -125,13 +136,14 @@ class gmh():#mesh
 		cylinder = gmsh.model.occ.addCone(0, 0, 0 ,h, 0, 0, r,R)	
 		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate()
+		gmsh.model.mesh.generate(2)
 		gmsh.write("cone" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("cone" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in26(self,R,r):
+	def in26(self,R,r):#tor
 		gmsh.initialize()
 		print(R, ' ',r)
 		global poradok
@@ -142,11 +154,12 @@ class gmh():#mesh
 		gmsh.model.occ.synchronize()
 		gmsh.model.mesh.generate()
 		gmsh.write("tor" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("tor" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in28(self,b,c,a):
+	def in28(self,b,c,a):#klin
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -154,36 +167,46 @@ class gmh():#mesh
 		cylinder = gmsh.model.occ.addWedge(0, 0, 0 ,a, b, c)	
 		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate()
+		gmsh.model.mesh.generate(2)
 		gmsh.write("wedge" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+		gmsh.write("wedge" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled")
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in4(self,n,text):
+	def in4(self,n,p):#own
 		gmsh.initialize()
 		global poradok
 		poradok+=1
 		lc = 1e-2
 		gmsh.model.add("ownfigure" + str(self.dt) +'('+str(poradok)+')')
-		self.p = (list(map(float, text.split())))
+		
 		n=int(len(self.p)/2)
 		for i in range(n):
 			gmsh.model.geo.addPoint(self.p[2*i+0], self.p[2*i+1], 0, lc, i+1)
 			print (self.p[2*i+0],' ', self.p[2*i+1])
 		for i in range(n-1):
 			gmsh.model.geo.addLine(i+1, i+2, i+1)
-		gmsh.model.geo.addLine(n, 1, n)
-		gmsh.model.geo.addCurveLoop([i+1 for i in range(n)], 1)
-		gmsh.model.geo.addPlaneSurface([1], 1)
-		gmsh.model.geo.synchronize()
-		gmsh.model.mesh.generate()
-		if '-nopopup' not in sys.argv:
-			gmsh.fltk.run()
-		gmsh.write("ownfigure" + str(self.dt) +'('+str(poradok)+')'+".msh") 
-		gmsh.finalize()
+		if (n == 2):
+			gmsh.model.geo.synchronize()
+			gmsh.model.mesh.generate()
+			if '-nopopup' not in sys.argv:
+				gmsh.fltk.run()
+			gmsh.write("ownfigure" + str(self.dt) +'('+str(poradok)+')'+".msh")
+			gmsh.write("ownfigure" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled")
+			gmsh.finalize()
+		else:
+			gmsh.model.geo.addLine(n, 1, n)
+			gmsh.model.geo.addCurveLoop([i+1 for i in range(n)], 1)
+			gmsh.model.geo.addPlaneSurface([1], 1)
+			gmsh.model.geo.synchronize()
+			gmsh.model.mesh.generate()
+			if '-nopopup' not in sys.argv:
+				gmsh.fltk.run()
+			gmsh.write("ownfigure" + str(self.dt) +'('+str(poradok)+')'+".msh") 
+			gmsh.finalize()
 
-	def in6(self,a):
+	def in6(self,a):#sphera
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -191,13 +214,13 @@ class gmh():#mesh
 		cylinder = gmsh.model.occ.addSphere (0, 0,0,a)
 		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate()
+		gmsh.model.mesh.generate(2)
 		gmsh.write("SPHERE" + str(self.dt) +'('+str(poradok)+')'+".msh") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
 
-	def in7(self,a,b,c):
+	def in7(self,a,b,c):#paralepiped
 		gmsh.initialize()
 		global poradok
 		poradok+=1
@@ -242,6 +265,7 @@ class gmh():#mesh
 		gmsh.model.geo.synchronize()
 		gmsh.model.mesh.generate(3)
 		gmsh.write("paralelepiped"+ str(self.dt) +'('+str(poradok)+')'+".msh")
+		gmsh.write("paralelepiped"+ str(self.dt) +'('+str(poradok)+')'+".geo_unrolled")
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
 		gmsh.finalize()
@@ -260,6 +284,7 @@ class Ui_Form26(object):
 		self.horizontalLayout_4.setObjectName("horizontalLayout_4")
 		self.label_2 = QtWidgets.QLabel(self.verticalLayoutWidget)
 		self.label_2.setObjectName("label_2")
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.horizontalLayout_4.addWidget(self.label_2)
 		self.lineEdit_2 = QtWidgets.QDoubleSpinBox(self.verticalLayoutWidget)
 		self.lineEdit_2.setMaximum(1.7976931348623158e+308)
@@ -312,9 +337,13 @@ class Window26(QMainWindow, Ui_Form26):#chetyreh ugolnic 2 okna
 	def Chan2(self):
 		self.v2=self.lineEdit_2.value()
 	def iniz(self):
-		self.g=gmh()
-		self.g.in26(self.v2,self.v1)
 		self.close()
+		if(self.v1==0) or (self.v2==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			self.g=gmh()
+			self.g.in26(self.v2,self.v1)
 
 class Ui_Form23(object):
 	def setupUi(self, Form):
@@ -355,7 +384,7 @@ class Ui_Form23(object):
 		self.pushButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
 		self.pushButton.setObjectName("pushButton")
 		self.verticalLayout_2.addWidget(self.pushButton)
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -382,9 +411,13 @@ class Window23(QMainWindow, Ui_Form23):#chetyreh ugolnic 2 okna
 	def Chan2(self):
 		self.v2=self.lineEdit_2.value()
 	def iniz(self):
-		self.g=gmh()
-		self.g.in23(self.v2,self.v1)
 		self.close()
+		if(self.v1==0) or (self.v2==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			self.g=gmh()
+			self.g.in23(self.v2,self.v1)
 
 class Ui_Form24(object): #paralelepiped 3 okna
 	def setupUi(self, Form):
@@ -445,7 +478,7 @@ class Ui_Form24(object): #paralelepiped 3 okna
 		self.pushButton.setGeometry(QtCore.QRect(5, 170, 180, 30))
 		self.pushButton.setMaximumSize(QtCore.QSize(180, 30))
 		self.pushButton.setObjectName("pushButton")
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -479,9 +512,13 @@ class Window24(QMainWindow, Ui_Form24):#paralelepiped
 	def Chan3(self):
 		self.v3=self.doubleSpinBox_3.value()
 	def iniz(self):
-		g=gmh()
-		g.in24(self.v1,self.v2,self.v3)
 		self.close()
+		if(self.v1==0) or (self.v2==0)or(self.v3==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			g=gmh()
+			g.in24(self.v1,self.v2,self.v3)
 
 class Ui_Form28(object): #paralelepiped 3 okna
 	def setupUi(self, Form):
@@ -542,7 +579,7 @@ class Ui_Form28(object): #paralelepiped 3 okna
 		self.pushButton.setGeometry(QtCore.QRect(5, 170, 180, 30))
 		self.pushButton.setMaximumSize(QtCore.QSize(180, 30))
 		self.pushButton.setObjectName("pushButton")
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -576,9 +613,13 @@ class Window28(QMainWindow, Ui_Form28):#paralelepiped
 	def Chan3(self):
 		self.v3=self.doubleSpinBox_3.value()
 	def iniz(self):
-		g=gmh()
-		g.in28(self.v1,self.v2,self.v3)
 		self.close()
+		if(self.v1==0) or (self.v2==0)or(self.v3==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			g=gmh()
+			g.in28(self.v1,self.v2,self.v3)
 
 class Ui_Form2(object):
 	def setupUi(self, Form):
@@ -619,7 +660,7 @@ class Ui_Form2(object):
 		self.pushButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
 		self.pushButton.setObjectName("pushButton")
 		self.verticalLayout_2.addWidget(self.pushButton)
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -691,7 +732,7 @@ class Ui_Form3(object): #paralelepiped 3 okna
 		self.pushButton.setGeometry(QtCore.QRect(5, 170, 180, 30))
 		self.pushButton.setMaximumSize(QtCore.QSize(180, 30))
 		self.pushButton.setObjectName("pushButton")
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -723,7 +764,7 @@ class Ui_Form4(object): #krug 1 okno
 		self.label_4 = QtWidgets.QLabel(Form)
 		self.label_4.setGeometry(QtCore.QRect(175, 10, 31, 20))
 		self.label_4.setObjectName("label_4")
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -747,8 +788,7 @@ class Ui_Form5(object): #kolichwstvo tochek
 		self.doubleSpinBox = QtWidgets.QSpinBox(Form)
 		self.doubleSpinBox.setGeometry(QtCore.QRect(120, 10, 90, 20))
 		self.doubleSpinBox.setObjectName("doubleSpinBox")
- 
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -777,7 +817,7 @@ class Ui_Form6(object): #input of points
 		self.pushButton = QtWidgets.QPushButton(Form)
 		self.pushButton.setGeometry(QtCore.QRect(10, 350, 370, 40))
 		self.pushButton.setObjectName("pushButton")
-
+		self.setWindowIcon(QtGui.QIcon('input.png'))
 		self.retranslateUi(Form)
 		QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -797,12 +837,17 @@ class Window6(QMainWindow, Ui_Form6):#input of points
 		self.spinBox.valueChanged.connect(self.Chan)
 		self.pushButton.clicked.connect(self.iniz)
 	def Chan(self):
-		self.v=int(self.spinBox.value())
+		self.v=(self.spinBox.value())
 	def iniz(self):
 		text = self.plainTextEdit.toPlainText()
-		g=gmh()
-		g.in4(self.v,text)
+		self.p = (list(map(float, text.split())))
 		self.close()
+		if(len(self.p)==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			g=gmh()
+			g.in4(self.v,self.p)
 
 class Window5(QMainWindow, Ui_Form5):#krug
 	def __init__(self):
@@ -814,14 +859,18 @@ class Window5(QMainWindow, Ui_Form5):#krug
 	def Chan(self):
 		self.v=self.doubleSpinBox.value()
 	def iniz(self):
-		global figura
-		if (figura == 1):
-			g=gmh()
-			g.in1(self.v)
-		if (figura == 6):
-			g=gmh()
-			g.in6(self.v)
 		self.close()
+		if(self.v==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			global figura
+			if (figura == 1):
+				g=gmh()
+				g.in1(self.v)
+			if (figura == 6):
+				g=gmh()
+				g.in6(self.v)
 
 class Window3(QMainWindow, Ui_Form3):#paralelepiped
 
@@ -842,9 +891,14 @@ class Window3(QMainWindow, Ui_Form3):#paralelepiped
 	def Chan3(self):
 		self.v3=self.doubleSpinBox_3.value()
 	def iniz(self):
-		g=gmh()
-		g.in7(self.v1,self.v2,self.v3)
 		self.close()
+
+		if(self.v1==0) or (self.v2==0)or(self.v3==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			g=gmh()
+			g.in7(self.v1,self.v2,self.v3)
 
 class Window4(QMainWindow, Ui_Form4):#radius
 	def __init__(self):
@@ -856,14 +910,18 @@ class Window4(QMainWindow, Ui_Form4):#radius
 	def Chan(self):
 		self.v=self.doubleSpinBox.value()
 	def iniz(self):
-		global figura
-		if (figura == 1):
-			g=gmh()
-			g.in1(self.v)
-		if (figura == 6):
-			g=gmh()
-			g.in6(self.v)
 		self.close()
+		if(self.v==0):
+			self.g=bd()
+			self.g.show()
+		else:
+			global figura
+			if (figura == 1):
+				g=gmh()
+				g.in1(self.v)
+			if (figura == 6):
+				g=gmh()
+				g.in6(self.v)
 
 class Window2(QMainWindow, Ui_Form2):#chetyreh ugolnic 2 okna
 	def __init__(self):
@@ -879,14 +937,21 @@ class Window2(QMainWindow, Ui_Form2):#chetyreh ugolnic 2 okna
 	def Chan2(self):
 		self.v2=self.lineEdit_2.value()
 	def iniz(self):
-		if (figura == 2) :
-			g=gmh()
-			g.in2(self.v1,self.v2)
-		if (figura == 3):
-			g=gmh()
-			g.in3(self.v1,self.v2)
-		
 		self.close()
+		if (figura == 2) :
+			if(self.v1==0) or (self.v2==0):
+				self.g=bd()
+				self.g.show()
+			else:
+				g=gmh()
+				g.in2(self.v1,self.v2)
+		if (figura == 3):
+			if(self.v1==0) or (self.v2==0):
+				self.g=bd()
+				self.g.show()
+			else:
+				g=gmh()
+				g.in3(self.v1,self.v2)
 
 class Ui_MainWindow(object):
 	def setupUi(self, MainWindow):
@@ -1099,9 +1164,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.coc=Window2()
 		self.coc.show()
 
-if __name__ == "__main__":
-	import sys
-	app = QtWidgets.QApplication(sys.argv)
-	ui = MainWindow()
-	ui.show()
-	sys.exit(app.exec_())
+
+
+app = QtWidgets.QApplication(sys.argv)
+app.setWindowIcon(QtGui.QIcon('zac.png'))
+ui = MainWindow()
+ui.show()
+sys.exit(app.exec_())
