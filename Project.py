@@ -35,7 +35,7 @@ class bd(QWidget):#oshibka
 
 		hbox = QHBoxLayout(self)
 		pixmap = QPixmap("bsod_2.jpg")
-		self.setGeometry(-13, -40, 1920, 1080)
+		self.setGeometry(-13, -13, 1920, 1080)
 		lbl = QLabel(self)
 		lbl.setPixmap(pixmap)
 		hbox.addWidget(lbl)
@@ -119,9 +119,8 @@ class gmh():#mesh
 		poradok+=1
 		gmsh.model.add("cylinder" + str(self.dt)+'('+str(poradok)+')')
 		cylinder = gmsh.model.occ.addCylinder(0, 0, 0 ,h, 0, 0, r)
-		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate(2)
+		gmsh.model.mesh.generate(3)
 		gmsh.write("cylinder" + str(self.dt) +'('+str(poradok)+')'+".msh") 
 		gmsh.write("cylinder" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
@@ -134,9 +133,8 @@ class gmh():#mesh
 		poradok+=1
 		gmsh.model.add("cone" + str(self.dt)+'('+str(poradok)+')')
 		cylinder = gmsh.model.occ.addCone(0, 0, 0 ,h, 0, 0, r,R)	
-		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate(2)
+		gmsh.model.mesh.generate(3)
 		gmsh.write("cone" + str(self.dt) +'('+str(poradok)+')'+".msh") 
 		gmsh.write("cone" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
@@ -150,9 +148,8 @@ class gmh():#mesh
 		poradok+=1
 		gmsh.model.add("tor" + str(self.dt)+'('+str(poradok)+')')
 		torus = gmsh.model.occ.addTorus(0, 0,0,R, r)
-		gmsh.model.occ.addVolume([torus])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate()
+		gmsh.model.mesh.generate(3)
 		gmsh.write("tor" + str(self.dt) +'('+str(poradok)+')'+".msh") 
 		gmsh.write("tor" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled") 
 		if '-nopopup' not in sys.argv:
@@ -165,9 +162,8 @@ class gmh():#mesh
 		poradok+=1
 		gmsh.model.add("wedge" + str(self.dt)+'('+str(poradok)+')')
 		cylinder = gmsh.model.occ.addWedge(0, 0, 0 ,a, b, c)	
-		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate(2)
+		gmsh.model.mesh.generate(3)
 		gmsh.write("wedge" + str(self.dt) +'('+str(poradok)+')'+".msh") 
 		gmsh.write("wedge" + str(self.dt) +'('+str(poradok)+')'+".geo_unrolled")
 		if '-nopopup' not in sys.argv:
@@ -181,10 +177,10 @@ class gmh():#mesh
 		lc = 1e-2
 		gmsh.model.add("ownfigure" + str(self.dt) +'('+str(poradok)+')')
 		
-		n=int(len(self.p)/2)
+		n=int(len(p)/2)
 		for i in range(n):
-			gmsh.model.geo.addPoint(self.p[2*i+0], self.p[2*i+1], 0, lc, i+1)
-			print (self.p[2*i+0],' ', self.p[2*i+1])
+			gmsh.model.geo.addPoint(p[2*i+0], p[2*i+1], 0, lc, i+1)
+
 		for i in range(n-1):
 			gmsh.model.geo.addLine(i+1, i+2, i+1)
 		if (n == 2):
@@ -212,9 +208,8 @@ class gmh():#mesh
 		poradok+=1
 		gmsh.model.add("SPHERE" + str(self.dt) +'('+str(poradok)+')')
 		cylinder = gmsh.model.occ.addSphere (0, 0,0,a)
-		gmsh.model.occ.addVolume([cylinder])
 		gmsh.model.occ.synchronize()
-		gmsh.model.mesh.generate(2)
+		gmsh.model.mesh.generate(3)
 		gmsh.write("SPHERE" + str(self.dt) +'('+str(poradok)+')'+".msh") 
 		if '-nopopup' not in sys.argv:
 			gmsh.fltk.run()
